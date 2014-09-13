@@ -1,0 +1,20 @@
+{
+  "name": "led-swinton-backyard",
+  "version": "0.0.0",
+  "homepage": "https://github.com/met5678/led-socket-stream",
+  "authors": [
+    "Andrew Metcalf <andrew@luminal.io>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.1",
+    "bootswatch-dist": "3.2.0-cyborg"
+  }
+}
