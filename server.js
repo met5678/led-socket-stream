@@ -1,53 +1,44 @@
-var app = require('http').createServer(handler);
-//var conv = require('convert-hex');
-var io = require('socket.io')(app);
-var fs = require('fs');
-var SPI = require("pi-spi");
+var express = require('express');
+var app = express();
+var server = require('http').createServer(app);
+var io = require('socket.io')(server);
 
+var controller = require('./led-controller')();
 
-var spi = SPI.initialize("/dev/spidev0.0");
-spi.clockSpeed(1e6);
-
+var numUsers = 0;
 var numLEDs = 106;
-var channels = numLEDs*3;
 
-app.listen(80);
+var initServer = function() {
+	app.use(express.static(__dirname + '/public'));
+	app.use('/bower_components',express.static(__dirname + '/bower_components'));
 
-function handler(req, res) {
-	fs.readFile(__dirname + '/index.html',
-	function(err,data) {
-		if(err) {
-			res.writeHead(500);
-			return res.end('Error loading index.html');
+	server.listen(80);
 
-		}
-
-		res.writeHead(200);
-		res.end(data);
-	});
-}
-
-var curBuf = new Buffer(channels);
-curBuf.fill(0);
-
-var noop = function () {};
-
-var writeLEDs = function() {
-	spi.write(curBuf,noop);
+	initSocket();
 };
 
+var initSocket = function() {
+	io.on('connection',userDidConnect);
+};
 
-io.on('connection', function(socket) {
-	socket.emit('config',{
+var userDidDisconnect = function() {
+	numUsers--;
+	io.emit('config',{
 		'numLEDs':numLEDs,
-		'testBuf':curBuf
+		'numUsers':numUsers
 	});
-	socket.on('cf', function(data) {
-		curBuf = data;
-		writeLEDs();
-		//console.log(data);
-		//curBuf = new Buffer(conv.hexToBytes(data));
-	});
-});
+};
 
-//setInterval(writeLEDs,16);
+var userDidConnect = function(socket) {
+	numUsers++;
+	io.emit('config',{
+		'numLEDs':numLEDs,
+		'numUsers':numUsers
+	});
+
+	socket.on('config',controller.setConfig);
+	socket.on('cf',controller.setLEDs);
+	socket.on('disconnect',userDidDisconnect);
+};
+
+initServer();

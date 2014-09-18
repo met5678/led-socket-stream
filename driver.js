@@ -12,7 +12,7 @@ var channels = numLEDs*3;
 var buf = new Buffer(channels);
 buf.fill(0x00);
 
-app.listen(80);
+app.listen(3000);
 
 function handler(req, res) {
 	fs.readFile(__dirname + '/index.html',

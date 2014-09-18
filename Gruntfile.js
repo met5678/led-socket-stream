@@ -6,16 +6,23 @@ module.exports = function(grunt) {
     wiredep: {
       target: {
         src: [
-          'index.html'
+          '*/*.html'
         ]
+      }
+    },
+    watch: {
+      bower: {
+        files: ['bower.json'],
+        tasks: ['wiredep']
       }
     }
   });
 
   // Load the plugin that provides the "uglify" task.
   grunt.loadNpmTasks('grunt-wiredep');
+  grunt.loadNpmTasks('grunt-contrib-watch');
 
   // Default task(s).
-  grunt.registerTask('default', ['wiredep']);
+  grunt.registerTask('default', ['wiredep','watch']);
 
 };

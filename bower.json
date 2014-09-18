@@ -15,6 +15,9 @@
   ],
   "dependencies": {
     "jquery": "~2.1.1",
-    "bootswatch-dist": "3.2.0-cyborg"
+    "bootswatch-dist": "3.2.0-cyborg",
+    "socket.io-client": "~1.1.0",
+    "spectrajs": "~0.2.3",
+    "chroma-js": "~0.5.8"
   }
 }
